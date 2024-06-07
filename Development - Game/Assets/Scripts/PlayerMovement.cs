@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.VersionControl.Asset;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -32,13 +33,12 @@ public class PlayerMovement : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, rotationInput * rotationSpeed * Time.deltaTime, 0f);
         transform.rotation *= rotation;
 
-        if (movement != Vector3.zero)
-        {
-            animator.SetBool("IsMoving", true);
-        }
-        else
-        {
-            animator.SetBool("IsMoving", false);
-        }
+        // Check if the player is moving forward, backward, or standing still.
+        bool isMoving = movementInput != 0 || rotationInput != 0; // Any non-zero input means the player is moving
+        bool isBackwards = movementInput < 0;
+
+        // Update the animator with movement and backward states.
+        animator.SetBool("IsBackwards", isBackwards);
+        animator.SetBool("IsMoving", isMoving && !isBackwards);
     }
 }
